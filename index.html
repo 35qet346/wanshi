@@ -13356,5 +13356,25 @@ if (document.readyState === 'loading') {
   boot();
 }
 </script>
+  <script>
+window.onerror = function(msg, url, line) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:8px;z-index:9999;font-size:12px;font-family:monospace;white-space:pre-wrap;word-break:break-all';
+  d.textContent = '❌ JS错误: ' + msg + '\n行号: ' + line;
+  document.body.appendChild(d);
+};
+window.onload = function() {
+  setTimeout(function() {
+    var content = document.getElementById('content');
+    if (content && content.innerHTML.trim() === '') {
+      var d = document.createElement('div');
+      d.style.cssText = 'position:fixed;top:40px;left:0;right:0;background:#e80;color:#fff;padding:8px;z-index:9999;font-size:12px';
+      d.textContent = '⚠ 页面渲染为空，说明 boot() 没执行或中途出错';
+      document.body.appendChild(d);
+    }
+  }, 500);
+};
+</script>
+
 </body>
 </html>
