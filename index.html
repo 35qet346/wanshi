@@ -13357,23 +13357,38 @@ if (document.readyState === 'loading') {
 }
 </script>
   <script>
-window.onerror = function(msg, url, line) {
-  var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:8px;z-index:9999;font-size:12px;font-family:monospace;white-space:pre-wrap;word-break:break-all';
-  d.textContent = '❌ JS错误: ' + msg + '\n行号: ' + line;
-  document.body.appendChild(d);
+/* ========== V13 补丁：补齐缺失的全局变量并重启 ========== */
+window.UI = window.UI || {
+  tab: 'family',
+  sub: 'home',
+  selectedAction: null,
+  selectedYears: 5,
+  modalOpen: false,
+  decisionQueue: [],
+  remainingYears: 0
 };
-window.onload = function() {
-  setTimeout(function() {
-    var content = document.getElementById('content');
-    if (content && content.innerHTML.trim() === '') {
+window.LEGACY = window.LEGACY || { points: 0, upgrades: {} };
+if (typeof G === 'undefined') window.G = null;
+
+/* 修好变量后，重新启动 */
+setTimeout(function () {
+  if (typeof boot === 'function') {
+    try {
+      boot();
+    } catch (e) {
+      console.error('boot 失败:', e);
       var d = document.createElement('div');
-      d.style.cssText = 'position:fixed;top:40px;left:0;right:0;background:#e80;color:#fff;padding:8px;z-index:9999;font-size:12px';
-      d.textContent = '⚠ 页面渲染为空，说明 boot() 没执行或中途出错';
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:12px;z-index:99999;font-size:12px;font-family:monospace;white-space:pre-wrap;word-break:break-all';
+      d.textContent = '❌ 补丁后仍失败：' + e.message;
       document.body.appendChild(d);
     }
-  }, 500);
-};
+  } else {
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#e80;color:#fff;padding:12px;z-index:99999;font-size:12px;font-family:monospace';
+    d.textContent = '⚠ 找不到 boot() 函数，代码可能被截断';
+    document.body.appendChild(d);
+  }
+}, 100);
 </script>
 
 </body>
